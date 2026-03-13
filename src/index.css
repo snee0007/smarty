@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 230 20% 3%;
+    --foreground: 0 0% 97%;
+    --card: 230 60% 15%;
+    --card-foreground: 0 0% 97%;
+    --popover: 230 60% 15%;
+    --popover-foreground: 0 0% 97%;
+    --primary: 0 82% 44%;
+    --primary-foreground: 0 0% 97%;
+    --secondary: 216 70% 52%;
+    --secondary-foreground: 0 0% 97%;
+    --muted: 230 30% 20%;
+    --muted-foreground: 45 90% 70%;
+    --accent: 45 95% 69%;
+    --accent-foreground: 230 20% 5%;
+    --destructive: 0 82% 44%;
+    --destructive-foreground: 0 0% 97%;
+    --border: 45 95% 69%;
+    --input: 230 30% 25%;
+    --ring: 45 95% 69%;
+    --radius: 0px;
+    --sidebar-background: 230 60% 15%;
+    --sidebar-foreground: 0 0% 97%;
+    --sidebar-primary: 0 82% 44%;
+    --sidebar-primary-foreground: 0 0% 97%;
+    --sidebar-accent: 45 95% 69%;
+    --sidebar-accent-foreground: 230 20% 5%;
+    --sidebar-border: 45 95% 69%;
+    --sidebar-ring: 45 95% 69%;
+
+    --mario-red: 0 82% 44%;
+    --mario-blue: 216 70% 52%;
+    --mario-yellow: 45 95% 69%;
+    --mario-green: 120 60% 40%;
+    --mario-dark: 230 20% 5%;
+    --mario-cream: 40 40% 92%;
+    --pixel-font: 'Press Start 2P', monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--pixel-font);
+    margin: 0;
+    overflow: hidden;
+  }
+}
+
+@layer components {
+  .retro-panel {
+    background: hsl(var(--card));
+    border: 4px solid hsl(var(--border));
+    box-shadow: 
+      inset 0 0 0 2px hsl(var(--mario-dark)),
+      6px 6px 0 hsl(var(--mario-dark));
+    padding: 12px;
+    image-rendering: pixelated;
+  }
+
+  .retro-title {
+    font-family: var(--pixel-font);
+    font-size: 10px;
+    color: hsl(var(--accent));
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 0 hsl(var(--mario-dark));
+  }
+
+  .retro-input {
+    font-family: var(--pixel-font);
+    font-size: 8px;
+    background: hsl(var(--input));
+    border: 2px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    padding: 6px 8px;
+    outline: none;
+    width: 100%;
+  }
+
+  .retro-input:focus {
+    border-color: hsl(var(--mario-yellow));
+    box-shadow: 0 0 0 1px hsl(var(--mario-yellow));
+  }
+
+  .retro-button {
+    font-family: var(--pixel-font);
+    font-size: 9px;
+    background: hsl(var(--mario-green));
+    color: hsl(var(--foreground));
+    border: 3px solid hsl(var(--mario-dark));
+    padding: 8px 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0 hsl(var(--mario-dark));
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  .retro-button:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 hsl(var(--mario-dark));
+  }
+
+  .retro-button:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 hsl(var(--mario-dark));
+  }
+
+  .retro-select {
+    font-family: var(--pixel-font);
+    font-size: 8px;
+    background: hsl(var(--input));
+    border: 2px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    padding: 6px 8px;
+    width: 100%;
+  }
+
+  @keyframes blink-red {
+    0%, 50% { color: hsl(0 82% 55%); }
+    51%, 100% { color: hsl(0 82% 30%); }
+  }
+
+  .expiry-critical {
+    animation: blink-red 0.5s infinite;
+  }
+
+  .expiry-warning {
+    color: hsl(var(--mario-yellow));
+  }
+
+  .expiry-ok {
+    color: hsl(var(--foreground));
+  }
+}
