@@ -1,73 +1,146 @@
-# Welcome to your Lovable project
+# Smarty
 
-## Project info
+**Smarty** is an experimental smart-kitchen platform that combines
+**computer vision, ingredient inventory, and recipe assistance** to help
+users make better use of the food they already have.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+The project explores the idea of a **digital fridge companion** that can
+recognize ingredients, track inventory, and eventually recommend meals.
 
-## How can I edit this code?
+The repository currently contains two main applications:
 
-There are several ways of editing your application.
+-   **ImageAI** -- an AI-powered fridge scanner that detects ingredients
+-   **Fridge Space Arcade** -- a frontend interface for managing fridge
+    contents
 
-**Use Lovable**
+This project is an early prototype exploring the intersection of **AI,
+food inventory management, and smart cooking assistants**.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+------------------------------------------------------------------------
 
-Changes made via Lovable will be committed automatically to this repo.
+# Project Structure
 
-**Use your preferred IDE**
+    smarty/
+    │
+    ├── ImageAI/                     # AI fridge scanning application
+    │   ├── src/
+    │   ├── components/
+    │   └── configuration files
+    │
+    ├── fridge-space-arcade-main/    # React frontend interface
+    │   ├── src/
+    │   ├── public/
+    │   └── configuration files
+    │
+    └── README.md
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+------------------------------------------------------------------------
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+# Applications
 
-Follow these steps:
+## 1. ImageAI
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+An experimental **AI-powered ingredient recognition application**.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+The goal of this module is to allow users to **scan their fridge using a
+camera** and automatically detect food items.
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Possible capabilities
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+-   Capture fridge images
+-   Detect ingredients using computer vision
+-   Send ingredient data to the frontend inventory system
 
-**Edit a file directly in GitHub**
+### Technology stack
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+-   **Next.js**
+-   **React**
+-   **Firebase**
+-   **TypeScript**
 
-**Use GitHub Codespaces**
+------------------------------------------------------------------------
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 2. Fridge Space Arcade
 
-## What technologies are used for this project?
+A **React-based user interface** for interacting with fridge inventory.
 
-This project is built with:
+This application provides the user-facing experience where ingredients
+can be viewed and managed.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Technology stack
 
-## How can I deploy this project?
+-   **React**
+-   **TypeScript**
+-   **Vite**
+-   **CSS**
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+The project was scaffolded using **Lovable.dev**.
 
-## Can I connect a custom domain to my Lovable project?
+------------------------------------------------------------------------
 
-Yes, you can!
+# Vision
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+The long-term goal of Smarty is to evolve into a **complete smart
+kitchen assistant**, including:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+-   AI fridge scanning
+-   Ingredient inventory tracking
+-   Recipe suggestions based on available ingredients
+-   Nutrition and calorie tracking
+-   Meal history and daily macro reports
+
+------------------------------------------------------------------------
+
+# Running the Projects
+
+Each application currently runs independently.
+
+## Run Fridge Space Arcade
+
+    cd fridge-space-arcade-main
+    npm install
+    npm run dev
+
+------------------------------------------------------------------------
+
+## Run ImageAI
+
+    cd ImageAI
+    npm install
+    npm run dev
+
+------------------------------------------------------------------------
+
+# Current Status
+
+This repository represents an **early prototype / exploration project**.
+
+Some features are incomplete or experimental. The architecture may
+evolve as the project develops.
+
+------------------------------------------------------------------------
+
+# Future Improvements
+
+Planned directions include:
+
+-   Unified backend
+-   Ingredient database
+-   AI recipe generation
+-   Nutrition tracking
+-   Mobile support
+-   Integration between scanning and inventory systems
+
+------------------------------------------------------------------------
+
+# Contributing
+
+This project is currently experimental and under development.
+
+Contributions, ideas, and feedback are welcome.
+
+------------------------------------------------------------------------
+
+# License
+
+This project is provided for experimental and educational purposes.

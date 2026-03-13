@@ -1,0 +1,10 @@
+{
+  "placeholderImages": [
+    {
+      "id": "fridge-placeholder",
+      "description": "An empty area to upload a photo of a fridge.",
+      "imageUrl": "https://picsum.photos/seed/fridge/600/800",
+      "imageHint": "fridge interior"
+    }
+  ]
+}
