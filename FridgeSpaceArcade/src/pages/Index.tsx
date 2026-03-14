@@ -259,7 +259,7 @@ const Index = () => {
           </div>
           <div className="flex flex-shrink-0 flex-wrap items-center gap-3">
             <button className="retro-button !py-3 !text-[11px]" onClick={runRecipeEngine}>
-              <Sparkles className="mr-2 inline-block" size={14} /> Generate AI recipes
+              <Sparkles className="mr-2 inline-block" size={14} /> AI recipes
             </button>
             <div className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-[10px] uppercase tracking-[0.22em] text-emerald-200">
               {pantryPulse}
