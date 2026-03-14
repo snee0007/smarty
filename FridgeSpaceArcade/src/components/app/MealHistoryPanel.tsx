@@ -10,7 +10,7 @@ const MealHistoryPanel = ({ meals }: Props) => {
   return (
     <>
       {recent.length === 0 ? (
-        <div className="text-[10px] leading-5 text-white/60">Once you cook from recipe mode, the finished meals show up here.</div>
+        <div className="text-[10px] leading-5 text-white/60">Recipe logs and manual meal entries show up here once you add them.</div>
       ) : (
         <div className="space-y-2">
           {recent.map((meal) => (

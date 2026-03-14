@@ -25,7 +25,9 @@ export interface RecipeSuggestion {
   id: string;
   name: string;
   description: string;
+  image: string;
   cookTime: number;
+  prepTime: number;
   difficulty: 'easy' | 'medium';
   matchScore: number;
   ingredientsUsed: string[];

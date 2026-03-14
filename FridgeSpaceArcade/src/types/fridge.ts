@@ -1,7 +1,8 @@
 export interface FridgeItem {
   id: string;
   name: string;
-  expiry: Date;
+  expiry: Date | null;
+  quantity: number;
   type: 'milk' | 'cheese' | 'juice' | 'other';
   shelfIndex: number;
   slotIndex: number;
