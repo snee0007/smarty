@@ -3,17 +3,19 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { FridgeItem } from '@/types/fridge';
 
-const SHELVES = 3;
-const SLOTS_PER_SHELF = 3;
+const SHELVES = 4;
+const SLOTS_PER_SHELF = 4;
 const MAX_ITEMS = SHELVES * SLOTS_PER_SHELF;
 
 const FW = 2;
 const FH = 3.5;
 const FD = 1.5;
 const WALL = 0.08;
+const INNER_WIDTH = FW - WALL * 2;
+const INNER_HEIGHT = FH - WALL * 2;
 
-const SLOT_X = [-0.55, 0, 0.55];
-const SHELF_Y = [-0.83, 0.12, 1.07];
+const SLOT_X = [-0.66, -0.22, 0.22, 0.66];
+const SHELF_Y = [-1.1, -0.35, 0.35, 1.1];
 const ITEM_Z = -0.08;
 
 type ItemVisual = {
@@ -195,6 +197,7 @@ function disposeObject(object: THREE.Object3D) {
   });
 }
 
+
 function createItemObject(item: FridgeItem): AnimatedItemObject {
   const visual = getItemVisual(item.name, item.type);
   const group = new THREE.Group() as AnimatedItemObject;
@@ -252,6 +255,73 @@ function createItemObject(item: FridgeItem): AnimatedItemObject {
   return group;
 }
 
+function createFridgeFace(doorPivot: THREE.Object3D) {
+  const faceGroup = new THREE.Group();
+
+  function createEye() {
+    const eye = new THREE.Group();
+
+    const white = new THREE.Mesh(
+      new THREE.SphereGeometry(0.09, 16, 16),
+      new THREE.MeshToonMaterial({ color: 0xffffff })
+    );
+
+    const pupil = new THREE.Mesh(
+      new THREE.SphereGeometry(0.035, 12, 12),
+      new THREE.MeshToonMaterial({ color: 0x000000 })
+    );
+    pupil.position.z = 0.07;
+
+    const eyelid = new THREE.Mesh(
+      new THREE.BoxGeometry(0.18, 0.18, 0.05),
+      new THREE.MeshToonMaterial({ color: 0xf4f0df })
+    );
+    eyelid.position.y = 0.08;
+    eyelid.position.z = 0.05;
+
+    eye.add(white, pupil, eyelid);
+    return { eye, pupil, eyelid };
+  }
+
+  const left = createEye();
+  const right = createEye();
+
+  left.eye.position.set(-FW / 2 - 0.34, 0.64, 0.08);
+  right.eye.position.set(-FW / 2 + 0.08, 0.64, 0.08);
+
+  doorPivot.add(left.eye);
+  doorPivot.add(right.eye);
+
+  const mouth = new THREE.Mesh(
+    new THREE.TorusGeometry(
+      0.18,   // smile width
+      0.03,   // thickness
+      16,
+      100,
+      Math.PI
+    ),
+    new THREE.MeshToonMaterial({ color: 0x161616 })
+  );
+
+  mouth.rotation.z = Math.PI; // flip to smile
+  mouth.position.set(-FW / 2 - 0.13, 0.30, 0.11);
+
+  doorPivot.add(mouth);
+
+
+  return {
+    leftEye: left.eye,
+    rightEye: right.eye,
+    leftPupil: left.pupil,
+    rightPupil: right.pupil,
+    leftEyelid: left.eyelid,
+    rightEyelid: right.eyelid,
+    mouth
+  };
+}
+
+
+
 interface SceneRefs {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
@@ -265,6 +335,14 @@ interface SceneRefs {
   itemObjects: Map<string, AnimatedItemObject>;
   doorOpen: boolean;
   animating: boolean;
+  leftEye?: THREE.Group;
+  rightEye?: THREE.Group;
+  leftPupil?: THREE.Mesh;
+  rightPupil?: THREE.Mesh;
+  leftEyelid?: THREE.Mesh;
+  rightEyelid?: THREE.Mesh;
+  mouth?: THREE.Mesh;
+  lastBlink?: number;
 }
 
 interface Props {
@@ -431,6 +509,12 @@ const FridgeScene = ({ items, onRemoveItem, onDoorStateChange, doorShouldOpen }:
     handle.position.set(-FW + 0.22, 0.2, 0.09);
     handle.userData.isDoor = true;
     doorPivot.add(handle);
+    const face = createFridgeFace(doorPivot);
+// Door shelves for bottles/milk (fixed inside door)
+// Door shelves (for milk/water) slightly in front of door interior
+
+
+
 
     const floorGlow = new THREE.Mesh(
       new THREE.CircleGeometry(2.4, 32),
@@ -460,6 +544,13 @@ const FridgeScene = ({ items, onRemoveItem, onDoorStateChange, doorShouldOpen }:
       itemObjects: new Map(),
       doorOpen: false,
       animating: false,
+      leftEye: face.leftEye,
+      rightEye: face.rightEye,
+      leftPupil: face.leftPupil,
+      rightPupil: face.rightPupil,
+      leftEyelid: face.leftEyelid,
+      rightEyelid: face.rightEyelid,
+      mouth: face.mouth,
     };
 
     const onClick = (event: MouseEvent) => {
@@ -522,7 +613,34 @@ const FridgeScene = ({ items, onRemoveItem, onDoorStateChange, doorShouldOpen }:
           object.scale.setScalar(1);
         }
       });
+      // --- FACE ANIMATION ---
 
+      if (refs.leftPupil && refs.rightPupil) {
+        const follow = 0.04;
+
+        refs.leftPupil.position.x += (refs.mouse.x * follow - refs.leftPupil.position.x) * 0.1;
+        refs.leftPupil.position.y += (refs.mouse.y * follow - refs.leftPupil.position.y) * 0.1;
+
+        refs.rightPupil.position.x += (refs.mouse.x * follow - refs.rightPupil.position.x) * 0.1;
+        refs.rightPupil.position.y += (refs.mouse.y * follow - refs.rightPupil.position.y) * 0.1;
+      }
+
+      // blinking
+      if (!refs.lastBlink) refs.lastBlink = now;
+
+      if (refs.leftEyelid && refs.rightEyelid && now - refs.lastBlink > 3000 + Math.random() * 2000) {
+        refs.leftEyelid.position.y = 0.02;
+        refs.rightEyelid.position.y = 0.02;
+
+        setTimeout(() => {
+          if (sceneRef.current) {
+            sceneRef.current.leftEyelid!.position.y = 0.08;
+            sceneRef.current.rightEyelid!.position.y = 0.08;
+          }
+        }, 140);
+
+        refs.lastBlink = now;
+      }
       refs.controls.update();
       refs.renderer.render(refs.scene, refs.camera);
     };
@@ -585,6 +703,59 @@ const FridgeScene = ({ items, onRemoveItem, onDoorStateChange, doorShouldOpen }:
       const object = createItemObject(item);
       refs.fridgeGroup.add(object);
       refs.itemObjects.set(item.id, object);
+    }
+  }, [items]);
+
+  useEffect(() => {
+    const refs = sceneRef.current;
+    if (!refs || !refs.mouth) return;
+
+    let healthy = 0;
+    let unhealthy = 0;
+
+    items.forEach((item) => {
+      const name = item.name.toLowerCase();
+
+      if (
+        name.includes("apple") ||
+        name.includes("banana") ||
+        name.includes("orange") ||
+        name.includes("broccoli") ||
+        name.includes("carrot") ||
+        name.includes("lettuce") ||
+        name.includes("milk") ||
+        name.includes("egg") ||
+        name.includes("fish")
+      ) {
+        healthy++;
+      }
+
+      if (
+        name.includes("pizza") ||
+        name.includes("burger") ||
+        name.includes("fries") ||
+        name.includes("donut") ||
+        name.includes("cake") ||
+        name.includes("soda") ||
+        name.includes("chocolate")
+      ) {
+        unhealthy++;
+      }
+    });
+
+    const score = healthy - unhealthy;
+
+    if (score > 0) {
+      // ☹️ Sad (too much junk)
+      refs.mouth.scale.y = -0.7;
+      refs.mouth.position.y = 0.26;
+      refs.interiorLight.color.set(0xff4444);
+    } 
+    else {
+      // 😊 Happy (default)
+      refs.mouth.scale.y = 1;
+      refs.mouth.position.y = 0.32;
+      refs.interiorLight.color.set(0x66ff99);
     }
   }, [items]);
 

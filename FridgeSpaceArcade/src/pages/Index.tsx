@@ -15,11 +15,18 @@ import { fileToDataUri } from '@/lib/fileToDataUri';
 import { detectFridgeItems } from '@/lib/imageDetectionApi';
 import { defaultPreferences, loadPreferences, savePreferences } from '@/lib/preferencesStore';
 import { loadMeals, saveMeals } from '@/lib/mealStore';
-import { generateRecipes } from '@/lib/recipeEngine';
+import { generateAIRecipes } from '@/lib/airecipeenginer';
 import { MealLog, RecipeSuggestion, UserPreferences } from '@/types/app';
 
 const SIDEBAR_LEFT_WIDTH = 320;
 const SIDEBAR_RIGHT_WIDTH = 360;
+
+const makeId = () => {
+  if (globalThis.crypto && globalThis.crypto.randomUUID) {
+    return globalThis.crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+};
 
 const normalizeDetectedName = (name: string) =>
   name
@@ -86,7 +93,7 @@ const Index = () => {
         if (!doorOpen) setShouldOpenDoor(true);
         const slot = nextVisibleSlot(prev);
         const newItem: FridgeItem = {
-          id: crypto.randomUUID(),
+          id: makeId(),
           name,
           expiry: expiry ? new Date(expiry) : null,
           quantity: Math.max(1, quantity),
@@ -145,7 +152,7 @@ const Index = () => {
 
           const slot = nextVisibleSlot(nextItems);
           nextItems.push({
-            id: crypto.randomUUID(),
+            id: makeId(),
             name: detectedName,
             expiry: null,
             quantity: 1,
@@ -195,14 +202,16 @@ const Index = () => {
     setRecipesLoading(true);
     if (!doorOpen) setShouldOpenDoor(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
-    setRecipes(generateRecipes(items, preferences, meals));
+    // setRecipes(generateAIRecipes(items, preferences, meals));
+    const aiRecipes = await generateAIRecipes(items, preferences, meals);
+  setRecipes(aiRecipes);
     setRecipesLoading(false);
   }, [items, preferences, meals, doorOpen]);
 
   const handleLogMeal = useCallback((meal: Omit<MealLog, 'id' | 'eatenAt'>) => {
     setMeals((prev) => [
       {
-        id: crypto.randomUUID(),
+        id: makeId(),
         eatenAt: new Date().toISOString(),
         ...meal,
       },
@@ -245,7 +254,7 @@ const Index = () => {
         <div className="pointer-events-auto mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-4 rounded-[28px] border border-white/10 bg-[rgba(6,10,24,0.76)] px-5 py-4 shadow-[0_0_80px_rgba(0,0,0,0.3)] backdrop-blur-xl">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.32em] text-[hsl(var(--accent))]">
-              <BrainCircuit size={14} /> Healthify kitchen OS
+              <BrainCircuit size={14} /> Smarty kitchen OS
             </div>
           </div>
           <div className="flex flex-shrink-0 flex-wrap items-center gap-3">
@@ -263,13 +272,13 @@ const Index = () => {
         </div>
       </header>
 
-      {overflowCount > 0 && (
-        <div className="pointer-events-none absolute left-1/2 top-24 z-20 -translate-x-1/2 px-4 xl:left-auto xl:right-[380px] xl:top-20 xl:translate-x-0">
-          <div className="pointer-events-auto rounded-full border border-white/10 bg-[rgba(8,12,28,0.82)] px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-white/70 backdrop-blur-md">
-            Showing {MAX_ITEMS} items in 3D fridge · {overflowCount} more in inventory list
-          </div>
-        </div>
-      )}
+{/* {overflowCount > 0 && (
+  <div className="pointer-events-none absolute right-4 top-4 z-20">
+    <div className="rounded-full border border-white/10 bg-[rgba(8,12,28,0.68)] px-3 py-1 text-[9px] uppercase tracking-[0.16em] text-white/60 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.25)]">
+      {MAX_ITEMS} in fridge · +{overflowCount} in list
+    </div>
+  </div>
+)} */}
 
       <aside
         className="fixed left-0 top-0 z-30 hidden h-screen w-[320px] flex-col gap-3 overflow-y-auto border-r border-white/10 bg-[rgba(6,10,24,0.6)] py-4 pl-4 pr-2 backdrop-blur-sm xl:flex"
@@ -333,7 +342,7 @@ const Index = () => {
           <div className="mt-3 grid gap-3 border-t border-white/10 pt-3 sm:grid-cols-2">
             <ManualMealLogPanel onLogMeal={handleLogMeal} />
             <button className="retro-button w-full" onClick={runRecipeEngine}>
-              <Sparkles className="mr-2 inline-block" size={14} /> Generate AI recipes
+              <Sparkles className="mr-2 inline-block" size={14} /> Generate AIM recipes
             </button>
           </div>
         </div>

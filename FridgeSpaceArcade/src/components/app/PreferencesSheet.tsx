@@ -31,7 +31,7 @@ const PreferencesSheet = ({ preferences, onSave }: Props) => {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <button className="retro-button !bg-[hsl(var(--mario-blue))] flex items-center gap-2">
-          <Menu size={14} /> Menu
+          <Menu size={14} />
         </button>
       </SheetTrigger>
       <SheetContent side="left" className="border-[hsl(var(--border))] bg-[rgba(8,11,24,0.96)] text-foreground w-[360px] sm:w-[420px] overflow-y-auto">

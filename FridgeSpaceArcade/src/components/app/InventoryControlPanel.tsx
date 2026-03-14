@@ -133,9 +133,9 @@ const InventoryControlPanel = ({ items, onAdd, onRemove, onOpenRecipes, onUpdate
       <div className="flex flex-col gap-3">
         <CollapsiblePanel title="INVENTORY CONTROLS" defaultOpen={true}>
           <div className="space-y-3">
-            <button className="retro-button w-full text-base !py-4" onClick={onOpenRecipes}>
+            {/* <button className="retro-button w-full text-base !py-4" onClick={onOpenRecipes}>
               <Sparkles className="mr-2 inline-block" size={16} /> Generate AI recipes
-            </button>
+            </button> */}
             <button className="retro-button w-full !bg-[hsl(var(--mario-blue))]" onClick={() => setModalOpen(true)}>
               <PlusCircle className="mr-2 inline-block" size={14} /> Add food manually
             </button>
