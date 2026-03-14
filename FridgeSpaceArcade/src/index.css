@@ -75,6 +75,7 @@
     text-transform: uppercase;
     letter-spacing: 2px;
     text-shadow: 2px 2px 0 hsl(var(--mario-dark));
+    line-height: 1.5;
   }
 
   .retro-input {

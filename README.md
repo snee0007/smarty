@@ -1,146 +1,88 @@
 # Smarty
 
-**Smarty** is an experimental smart-kitchen platform that combines
-**computer vision, ingredient inventory, and recipe assistance** to help
-users make better use of the food they already have.
+Smarty is a smart-kitchen prototype that combines three ideas in one experience:
 
-The project explores the idea of a **digital fridge companion** that can
-recognize ingredients, track inventory, and eventually recommend meals.
+- fridge inventory management
+- AI-style recipe generation from available ingredients
+- daily calorie and macro tracking
 
-The repository currently contains two main applications:
+## What is implemented in this version
 
--   **ImageAI** -- an AI-powered fridge scanner that detects ingredients
--   **Fridge Space Arcade** -- a frontend interface for managing fridge
-    contents
+### Fridge inventory
+- 3D fridge scene with interactive door
+- manual ingredient entry
+- photo scan flow with fallback local ingredient detection
+- local persistence for fridge items
+- expiry-focused inventory panel
 
-This project is an early prototype exploring the intersection of **AI,
-food inventory management, and smart cooking assistants**.
+### AI recipe mode
+- fridge can shift into an **AI Recipe Command Deck**
+- recipes are generated from the current fridge contents
+- recipe suggestions take into account dietary preferences, disliked ingredients, calorie goals, and cook-time preference
+- each recipe shows estimated calories, protein, carbs, fat, cook time, and cooking steps
 
-------------------------------------------------------------------------
+### Nutrition and meal logging
+- left-side nutrition dashboard with progress toward calorie and macro targets
+- cook-and-log flow from recipe cards
+- recent meal history panel
+- local persistence for meal logs
 
-# Project Structure
+### Preferences menu
+- slide-out menu for:
+  - daily calorie target
+  - protein / carb / fat targets
+  - diet style
+  - restrictions
+  - disliked ingredients
+  - cooking time preference
+  - goal mode
 
-    smarty/
-    │
-    ├── ImageAI/                     # AI fridge scanning application
-    │   ├── src/
-    │   ├── components/
-    │   └── configuration files
-    │
-    ├── fridge-space-arcade-main/    # React frontend interface
-    │   ├── src/
-    │   ├── public/
-    │   └── configuration files
-    │
-    └── README.md
+## Project structure
 
-------------------------------------------------------------------------
+```text
+smarty/
+├── ImageAI/
+├── fridge-space-arcade-main/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── app/
+│   │   │   └── ui/
+│   │   ├── lib/
+│   │   ├── pages/
+│   │   └── types/
+│   └── package.json
+├── .gitignore
+└── README.md
+```
 
-# Applications
+## Main app to run
 
-## 1. ImageAI
+The primary implemented product experience in this package is in:
 
-An experimental **AI-powered ingredient recognition application**.
+```bash
+fridge-space-arcade-main/
+```
 
-The goal of this module is to allow users to **scan their fridge using a
-camera** and automatically detect food items.
+Run it with:
 
-### Possible capabilities
+```bash
+cd fridge-space-arcade-main
+npm install
+npm run dev
+```
 
--   Capture fridge images
--   Detect ingredients using computer vision
--   Send ingredient data to the frontend inventory system
+## Notes
 
-### Technology stack
+- this version uses **local recipe logic** rather than a live Gemini backend
+- preferences, meals, and fridge items are stored in `localStorage`
+- the scan flow gracefully falls back to a local mock detector when no backend endpoint is available
 
--   **Next.js**
--   **React**
--   **Firebase**
--   **TypeScript**
+## Recommended next upgrade
 
-------------------------------------------------------------------------
+The best next step is to replace the local recipe engine with a real backend pipeline:
 
-## 2. Fridge Space Arcade
-
-A **React-based user interface** for interacting with fridge inventory.
-
-This application provides the user-facing experience where ingredients
-can be viewed and managed.
-
-### Technology stack
-
--   **React**
--   **TypeScript**
--   **Vite**
--   **CSS**
-
-The project was scaffolded using **Lovable.dev**.
-
-------------------------------------------------------------------------
-
-# Vision
-
-The long-term goal of Smarty is to evolve into a **complete smart
-kitchen assistant**, including:
-
--   AI fridge scanning
--   Ingredient inventory tracking
--   Recipe suggestions based on available ingredients
--   Nutrition and calorie tracking
--   Meal history and daily macro reports
-
-------------------------------------------------------------------------
-
-# Running the Projects
-
-Each application currently runs independently.
-
-## Run Fridge Space Arcade
-
-    cd fridge-space-arcade-main
-    npm install
-    npm run dev
-
-------------------------------------------------------------------------
-
-## Run ImageAI
-
-    cd ImageAI
-    npm install
-    npm run dev
-
-------------------------------------------------------------------------
-
-# Current Status
-
-This repository represents an **early prototype / exploration project**.
-
-Some features are incomplete or experimental. The architecture may
-evolve as the project develops.
-
-------------------------------------------------------------------------
-
-# Future Improvements
-
-Planned directions include:
-
--   Unified backend
--   Ingredient database
--   AI recipe generation
--   Nutrition tracking
--   Mobile support
--   Integration between scanning and inventory systems
-
-------------------------------------------------------------------------
-
-# Contributing
-
-This project is currently experimental and under development.
-
-Contributions, ideas, and feedback are welcome.
-
-------------------------------------------------------------------------
-
-# License
-
-This project is provided for experimental and educational purposes.
+1. inventory + preferences -> API route
+2. Gemini structured JSON response
+3. Zod validation
+4. deterministic nutrition calculation
+5. Supabase persistence
