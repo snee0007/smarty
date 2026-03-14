@@ -11,7 +11,15 @@ export default defineConfig({
       },
     },
   },
+
+  preview: {
+    host: true,
+    port: 5173,
+    allowedHosts: ['smarty.insightpulse.fun'],
+  },
+
   plugins: [react()],
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
