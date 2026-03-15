@@ -15,7 +15,7 @@ import { fileToDataUri } from '@/lib/fileToDataUri';
 import { detectFridgeItems } from '@/lib/imageDetectionApi';
 import { defaultPreferences, loadPreferences, savePreferences } from '@/lib/preferencesStore';
 import { loadMeals, saveMeals } from '@/lib/mealStore';
-import { generateAIRecipes } from '@/lib/airecipeenginer';
+import { generateRecipes } from '@/lib/recipeEngine';
 import { MealLog, RecipeSuggestion, UserPreferences } from '@/types/app';
 
 const SIDEBAR_LEFT_WIDTH = 320;
@@ -203,7 +203,7 @@ const Index = () => {
     if (!doorOpen) setShouldOpenDoor(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
     // setRecipes(generateAIRecipes(items, preferences, meals));
-    const aiRecipes = await generateAIRecipes(items, preferences, meals);
+    const aiRecipes = await generateRecipes(items, preferences, meals);
   setRecipes(aiRecipes);
     setRecipesLoading(false);
   }, [items, preferences, meals, doorOpen]);
